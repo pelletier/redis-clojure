@@ -3,6 +3,10 @@
         [redis.connection :only (RedisConnection input-stream output-stream)])
   (:import [java.io ByteArrayOutputStream]))
 
+;;; Vars
+(def #^{:doc "Bound to an implementation of RedisChannel"}
+     *channel* nil)
+
 ;;; Protocols
 (defprotocol RedisChannel
   "A RedisChannel supports sending commands"

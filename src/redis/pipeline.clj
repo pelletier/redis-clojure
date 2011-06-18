@@ -1,7 +1,6 @@
 (ns redis.pipeline
   (:refer-clojure :exclude [send read read-line])
-  (:use [redis.core :only (*channel*)]
-        [redis.channel :only (RedisChannel)]
+  (:use [redis.channel :only (*channel* RedisChannel)]
         [redis.connection :only (input-stream output-stream)]
         [redis.protocol :only (write-to-buffer write-to-stream read-reply)])
   (:import [java.io ByteArrayOutputStream]
@@ -44,7 +43,7 @@
 
   Any exceptions will be caught and returned in the reply vector."
   [& body]
-  `(binding [redis.core/*channel* (make-pipelined-channel redis.core/*channel*)]
+  `(binding [*channel* (make-pipelined-channel *channel*)]
      ~@body
      (send-pipelined-commands *channel*)))
 

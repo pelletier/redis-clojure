@@ -1,7 +1,34 @@
 (ns redis.commands
   (:refer-clojure :exclude (type keys get set sort))
   (:use [redis.defcommand :only (defcommand defcommands)]
-        [redis.protocol :only (make-multi-bulk-command)]))
+        [redis.protocol :only (make-multi-bulk-command)]
+        [redis.channel :only (*channel* make-direct-channel)]
+        [redis.connection :only (with-connection)]
+        [redis.connection-pool :only (make-connection-pool)]))
+
+;;;; Vars
+
+(def #^{:doc "Bound to an implementation of RedisConnectionPool"}
+     *pool*
+     (make-connection-pool :lifo false
+                           :test-on-borrow true))
+
+;;;; Macros
+
+(defmacro with-server
+  "Evaluates body in the context of a connection to Redis server
+  specified by server-spec.
+
+  server-spec is a map with any of the following keys:
+    :host     (\"127.0.0.1\")
+    :port     (6379)
+    :db       (0)
+    :timeout  (5000)
+    :password (nil)"
+  ([server-spec & body]
+     `(with-connection connection# *pool* ~server-spec
+        (binding [*channel* (make-direct-channel connection#)]
+          ~@body))))
 
 ;;; Command definitions
 

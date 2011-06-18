@@ -1,8 +1,7 @@
 (ns redis.defcommand
   (:use [clojure.string :only (upper-case)])
-  (:use [redis.core :only (*channel*)]
-        [redis.protocol :only (make-inline-command make-multi-bulk-command)]
-        [redis.channel :only (send!)]))
+  (:use [redis.protocol :only (make-inline-command make-multi-bulk-command)]
+        [redis.channel :only (*channel* send!)]))
 
 ;;;; Command definition macros
 
